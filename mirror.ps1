@@ -14,10 +14,10 @@ Function Main {
         $sourceDrive = Get-Drive $source
         $targetDrive = Get-Drive $target
         $shadow = New-Shadow $sourceDrive
-        New-Mount $shadowDrive $shadow.DeviceObject
+        New-Mount $shadowDrive ($shadow.DeviceObject + "\")
     }
     Process {
-        dir $shadowDrive
+        dir ($shadowDrive + ":\")
     }
     End {
         Remove-Mount $shadowDrive
