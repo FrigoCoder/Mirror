@@ -23,8 +23,6 @@ Function Main {
     }
     End {
         Remove-Shadow $shadow
-        $shadows = Get-WmiObject Win32_ShadowCopy
-        "There are now {0} shadow copies on this sytem" -f $shadows.count
     }
 }
 
@@ -52,6 +50,7 @@ Function New-Shadow {
         $created = $Win32_ShadowCopy.Create($drive + "\", "ClientAccessible")
         $shadow = Get-WmiObject Win32_ShadowCopy | Where-Object ID -eq $created.ShadowId
         Write-Verbose $shadow
+        Write-Verbose $shadow.DeviceObject
         return $shadow
     }
 }
