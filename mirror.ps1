@@ -1,4 +1,4 @@
-Function Main {
+Function Mirror {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]
@@ -16,9 +16,8 @@ Function Main {
         New-Mount $shadowDrive $shadow.DeviceObject
     }
     Process {
-        pushd $shadowDrive
-        dir
-        popd
+        Remove-Files $shadowDrive $targetDrive
+        Copy-Files $shadowDrive $targetDrive
     }
     End {
         Remove-Mount $shadowDrive $shadow.DeviceObject
@@ -99,6 +98,7 @@ Function Remove-Mount {
 }
 
 Function DefineDosDevice {
+    [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]
         [uint32] $flags,
@@ -116,4 +116,36 @@ Function DefineDosDevice {
     }
 }
 
-Main @args
+Function Remove-Files {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [String] $source,
+
+        [Parameter(Mandatory = $true)]
+        [String] $target
+    )
+    $copy = "/nocopy /mir"
+    $fileSelection = "/xc /xn /xo /xl /xj"
+    $retry = "/r:5"
+    $logging = "/x /ndl /np /unicode"
+    Write-Output "$source $target $copy $fileSelection $retry $logging"
+}
+
+Function Copy-Files {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [String] $source,
+
+        [Parameter(Mandatory = $true)]
+        [String] $target
+    )
+    $copy = "/b /dcopy:t /copyall /secfix /timfix /mir"
+    $fileSelection = "/xj"
+    $retry = "/r:5"
+    $logging = "/x /ndl /np /unicode"
+    Write-Output "$source $target $copy $fileSelection $retry $logging"
+}
+
+Mirror @args
