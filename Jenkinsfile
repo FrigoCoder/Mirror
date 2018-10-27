@@ -16,6 +16,7 @@ pipeline {
         stage("Mirror") {
             steps {
                 ps ".\\Mirror.ps1 ${params.Source} ${params.Target} ${params.Shadow} -Verbose"
+            }
         }
     }
 }
