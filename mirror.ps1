@@ -2,37 +2,26 @@ Function Main {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]
-        [String] $source,
+        [String] $sourceDrive,
 
         [Parameter(Mandatory = $true)]
-        [String] $target,
+        [String] $targetDrive,
 
         [Parameter(Mandatory = $false)]
-        [String] $shadowDrive = "B"
+        [String] $shadowDrive = "B:"
     )
     Begin {
-        $sourceDrive = Get-Drive $source
-        $targetDrive = Get-Drive $target
         $shadow = New-Shadow $sourceDrive
-        New-Mount $shadowDrive ($shadow.DeviceObject + "\")
+        New-Mount $shadowDrive $shadow.DeviceObject
     }
     Process {
-        dir ($shadowDrive + ":\")
+        pushd $shadowDrive
+        dir
+        popd
     }
     End {
-        Remove-Mount $shadowDrive
+        Remove-Mount $shadowDrive $shadow.DeviceObject
         Remove-Shadow $shadow
-    }
-}
-
-Function Get-Drive {
-    [CmdletBinding()]
-    Param (
-        [Parameter(Mandatory = $true)]
-        [String] $path
-    )
-    Process {
-        return (Get-Item $path).PSDrive.Name
     }
 }
 
@@ -44,7 +33,7 @@ Function New-Shadow {
     )
     Process {
         $Win32_ShadowCopy = Get-WmiObject -List Win32_ShadowCopy
-        $created = $Win32_ShadowCopy.Create($drive + ":\", "ClientAccessible")
+        $created = $Win32_ShadowCopy.Create($drive + "\", "ClientAccessible")
         $shadow = Get-WmiObject Win32_ShadowCopy | Where-Object ID -eq $created.ShadowId
         Write-Verbose $shadow
         Write-Verbose $shadow.DeviceObject
@@ -73,7 +62,7 @@ Function New-Mount {
         [String] $path
     )
     Process {
-        New-PsDrive -Name $drive -PSProvider "FileSystem" -Root $path
+        DefineDosDevice 0 $drive $path
     }
 }
 
@@ -81,10 +70,31 @@ Function Remove-Mount {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]
-        [String] $drive
+        [String] $drive,
+
+        [Parameter(Mandatory = $true)]
+        [String] $path
     )
     Process {
-        Get-PSDrive $drive | Remove-PSDrive
+        DefineDosDevice 6 $drive $path
+    }
+}
+
+Function DefineDosDevice {
+    Param (
+        [Parameter(Mandatory = $true)]
+        [uint32] $flags,
+
+        [Parameter(Mandatory = $true)]
+        [String] $drive,
+
+        [Parameter(Mandatory = $true)]
+        [String] $path
+    )
+    Process {
+        $DefineDosDevice = '[DllImport("kernel32.dll", CharSet=CharSet.Auto, SetLastError=true)] public static extern bool DefineDosDevice(int dwFlags, string lpDeviceName, string lpTargetPath);'
+        $Kernel32 = Add-Type -MemberDefinition $DefineDosDevice -Name "Kernel32" -Namespace "Win32" -PassThru
+        $Kernel32::DefineDosDevice($flags, $drive, $path)
     }
 }
 
