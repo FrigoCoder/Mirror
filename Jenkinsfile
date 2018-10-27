@@ -15,7 +15,7 @@ pipeline {
     stages{
         stage("Mirror"){
             powershell "Set-PSDebug -Trace 1"
-            powershell ".\Mirror.ps1 $SOURCE_DRIVE $TARGET_DRIVE $SHADOW_DRIVE -Verbose"
+            powershell ".\\Mirror.ps1 $SOURCE_DRIVE $TARGET_DRIVE $SHADOW_DRIVE -Verbose"
         }
     }
 }
