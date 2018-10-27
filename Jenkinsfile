@@ -21,5 +21,5 @@ pipeline {
 }
 
 def ps (String command) {
-    bat "powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass \"Set-PSDebug -Trace 1; $command\"" -Verbose"
+    bat "powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass \"Set-PSDebug -Trace 1; $command\" -Verbose"
 }
