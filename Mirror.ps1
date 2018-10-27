@@ -1,3 +1,9 @@
+Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
+$PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
+
+Mirror @args
+
 Function Mirror {
     [CmdletBinding()]
     Param (
@@ -147,5 +153,3 @@ Function Copy-Files {
     $logging = "/x /ndl /np /unicode"
     Write-Output "$source $target $copy $fileSelection $retry $logging"
 }
-
-Mirror @args
