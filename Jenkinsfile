@@ -5,9 +5,9 @@ pipeline {
         timestamps()
     }
     parameters {
-        string(name: "SOURCE_DRIVE", defaultValue: "C:")
-        string(name: "TARGET_DRIVE", defaultValue: "D:")
-        string(name: "SHADOW_DRIVE", defaultValue: "E:")
+        string(name: "Source", defaultValue: "C:", description: "Source drive")
+        string(name: "Target", defaultValue: "D:", description: "Target drive")
+        string(name: "Shadow", defaultValue: "E:", description: "Shadow drive")
     }
     triggers {
         cron("0 4 * * *")
@@ -16,7 +16,7 @@ pipeline {
         stage("Mirror") {
             steps {
                 powershell "Set-PSDebug -Trace 1"
-                powershell ".\\Mirror.ps1 ${params.SOURCE_DRIVE} ${params.TARGET_DRIVE} ${params.SHADOW_DRIVE} -Verbose"
+                powershell ".\\Mirror.ps1 ${params.Source} ${params.Target} ${params.Shadow} -Verbose"
             }
         }
     }
