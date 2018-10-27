@@ -15,6 +15,7 @@ pipeline {
     stages {
         stage("Mirror") {
             steps {
+                bat "where powershell"
                 ps ".\\Mirror.ps1 ${params.Source} ${params.Target} ${params.Shadow}"
             }
         }
