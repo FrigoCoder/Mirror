@@ -133,7 +133,7 @@ Function Remove-Files {
     $fileSelection = "/xc /xn /xo /xl /xj"
     $retry = "/r:5"
     $logging = "/x /ndl /np /unicode"
-    "robocopy $source $target $copy $fileSelection $retry $logging"
+    robocopy $source $target $copy $fileSelection $retry $logging
 }
 
 Function Copy-Files {
@@ -149,7 +149,7 @@ Function Copy-Files {
     $fileSelection = "/xj"
     $retry = "/r:5"
     $logging = "/x /ndl /np /unicode"
-    "robocopy $source $target $copy $fileSelection $retry $logging"
+    robocopy $source $target $copy $fileSelection $retry $logging
 }
 
 Mirror @args
