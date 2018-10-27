@@ -15,7 +15,6 @@ pipeline {
     stages {
         stage("Mirror") {
             steps {
-                bat "where powershell"
                 ps ".\\Mirror.ps1 ${params.Source} ${params.Target} ${params.Shadow}"
             }
         }
@@ -23,5 +22,6 @@ pipeline {
 }
 
 def ps (String command) {
-    bat "powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass \"Set-PSDebug -Trace 1; $command\" -Verbose"
+    bat "where powershell"
+    bat "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass \"Set-PSDebug -Trace 1; $command\" -Verbose"
 }
