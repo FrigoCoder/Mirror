@@ -12,10 +12,12 @@ pipeline {
     triggers {
         cron("0 4 * * *")
     }
-    stages{
-        stage("Mirror"){
-            powershell "Set-PSDebug -Trace 1"
-            powershell ".\\Mirror.ps1 $SOURCE_DRIVE $TARGET_DRIVE $SHADOW_DRIVE -Verbose"
+    stages {
+        stage("Mirror") {
+            steps {
+                powershell "Set-PSDebug -Trace 1"
+                powershell ".\\Mirror.ps1 $SOURCE_DRIVE $TARGET_DRIVE $SHADOW_DRIVE -Verbose"
+            }
         }
     }
 }
