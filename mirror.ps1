@@ -11,6 +11,7 @@ Function Main {
         [String] $shadowDrive = "B:"
     )
     Begin {
+        Restart-Services COMsysAPP, SENS, EventSystem, SwPrv, VSS
         $shadow = New-Shadow $sourceDrive
         New-Mount $shadowDrive $shadow.DeviceObject
     }
@@ -22,6 +23,23 @@ Function Main {
     End {
         Remove-Mount $shadowDrive $shadow.DeviceObject
         Remove-Shadow $shadow
+    }
+}
+
+Function Restart-Services {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [String[]] $services
+    )
+    Process {
+        foreach ( $service in $services ) {
+            Set-Service -Name $service -StartupType Automatic
+            Stop-Service -Name $service
+        }
+        foreach ($service in [array]::Reverse($services)) {
+            Start-Service -Name $service
+        }
     }
 }
 
