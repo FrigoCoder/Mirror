@@ -15,8 +15,7 @@ pipeline {
     stages {
         stage("Mirror") {
             steps {
-                powershell "Set-PSDebug -Trace 1"
-                powershell ".\\Mirror.ps1 ${params.Source} ${params.Target} ${params.Shadow} -Verbose"
+                bat 'powershell "Set-PSDebug -Trace 1; .\\Mirror.ps1 ${params.Source} ${params.Target} ${params.Shadow} -Verbose"'
             }
         }
     }
