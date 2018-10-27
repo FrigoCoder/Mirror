@@ -129,11 +129,13 @@ Function Remove-Files {
         [Parameter(Mandatory = $true)]
         [String] $target
     )
-    $copy = "/nocopy /mir"
-    $fileSelection = "/xc /xn /xo /xl /xj"
-    $retry = "/r:5"
-    $logging = "/x /ndl /np /unicode"
-    & "robocopy $source $target $copy $fileSelection $retry $logging"
+    Process {
+        $copy = "/nocopy /mir"
+        $fileSelection = "/xc /xn /xo /xl /xj"
+        $retry = "/r:5"
+        $logging = "/x /ndl /np /unicode"
+        Exec robocopy $source $target $copy $fileSelection $retry $logging
+    }
 }
 
 Function Copy-Files {
@@ -145,11 +147,31 @@ Function Copy-Files {
         [Parameter(Mandatory = $true)]
         [String] $target
     )
-    $copy = "/b /dcopy:t /copyall /secfix /timfix /mir"
-    $fileSelection = "/xj"
-    $retry = "/r:5"
-    $logging = "/x /ndl /np /unicode"
-    & "robocopy $source $target $copy $fileSelection $retry $logging"
+    Process {
+        $copy = "/b /dcopy:t /copyall /secfix /timfix /mir"
+        $fileSelection = "/xj"
+        $retry = "/r:5"
+        $logging = "/x /ndl /np /unicode"
+        Exec robocopy $source $target $copy $fileSelection $retry $logging
+    }
+}
+
+Function Exec {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [String] $command,
+
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [String] $arguments
+    )
+    Process {
+        $process = Start-Process -FilePath $command -ArgumentList $arguments -NoNewWindow -PassThru -Wait
+        $exitCode = $process.ExitCode
+        if ( $exitCode -ne 0 ) {
+            throw "Failed with exit code ${exitCode}: $command $arguments"
+        }
+    }
 }
 
 Mirror @args
