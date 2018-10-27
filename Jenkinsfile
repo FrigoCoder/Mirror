@@ -7,7 +7,7 @@ pipeline {
     parameters {
         string(name: "Source", defaultValue: "C:", description: "Source drive")
         string(name: "Target", defaultValue: "D:", description: "Target drive")
-        string(name: "Shadow", defaultValue: "E:", description: "Shadow drive")
+        string(name: "Shadow", defaultValue: "B:", description: "Shadow drive")
     }
     triggers {
         cron("0 4 * * *")
