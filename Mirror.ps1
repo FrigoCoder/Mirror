@@ -134,7 +134,7 @@ Function Remove-Files {
         $fileSelection = "/xc /xn /xo /xl /xj"
         $retry = "/r:5"
         $logging = "/x /ndl /np /unicode"
-        Exec robocopy $source $target $copy $fileSelection $retry $logging
+        Invoke-Checked robocopy "$source $target $copy $fileSelection $retry $logging" 0, 2
     }
 }
 
@@ -152,23 +152,26 @@ Function Copy-Files {
         $fileSelection = "/xj"
         $retry = "/r:5"
         $logging = "/x /ndl /np /unicode"
-        Exec robocopy $source $target $copy $fileSelection $retry $logging
+        Invoke-Checked robocopy "$source $target $copy $fileSelection $retry $logging" 0, 1, 4, 5
     }
 }
 
-Function Exec {
+Function Invoke-Checked {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]
         [String] $command,
 
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [String] $arguments
+        [Parameter(Mandatory = $true)]
+        [String] $arguments,
+
+        [Parameter(Mandatory = $false)]
+        [int[]] $expectedCodes = 0
     )
     Process {
         $process = Start-Process -FilePath $command -ArgumentList $arguments -NoNewWindow -PassThru -Wait
         $exitCode = $process.ExitCode
-        if ( $exitCode -ne 0 ) {
+        if ( -not $expectedCodes.Contains($exitCode) ) {
             throw "Failed with exit code ${exitCode}: $command $arguments"
         }
     }
