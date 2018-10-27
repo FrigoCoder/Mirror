@@ -23,5 +23,5 @@ pipeline {
 
 def ps (String command) {
     bat "where powershell"
-    bat "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass \"Set-PSDebug -Trace 1; $command\" -Verbose"
+    bat "c:\\windows\\sysnative\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass \"Set-PSDebug -Trace 1; $command\" -Verbose"
 }
