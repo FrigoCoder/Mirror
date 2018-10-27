@@ -11,7 +11,7 @@ Function Main {
         [String] $shadowDrive = "B:"
     )
     Begin {
-        Restart-Services COMsysAPP, SENS, EventSystem, SwPrv, VSS
+        Reset-Services COMsysAPP, SENS, EventSystem, SwPrv, VSS
         $shadow = New-Shadow $sourceDrive
         New-Mount $shadowDrive $shadow.DeviceObject
     }
@@ -26,7 +26,7 @@ Function Main {
     }
 }
 
-Function Restart-Services {
+Function Reset-Services {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]
