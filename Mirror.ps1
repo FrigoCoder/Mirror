@@ -5,13 +5,13 @@ $PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
 Function Mirror {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $sourceDrive,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $targetDrive,
 
-        [Parameter(Mandatory = $false)]
+        [Parameter()]
         [String] $shadowDrive = "B:"
     )
     Reset-Services COMsysAPP, SENS, EventSystem, SwPrv, VSS
@@ -34,7 +34,7 @@ Function Mirror {
 Function Reset-Services {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String[]] $services
     )
     Process {
@@ -52,7 +52,7 @@ Function Reset-Services {
 Function New-Shadow {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $drive
     )
     Process {
@@ -68,7 +68,7 @@ Function New-Shadow {
 Function Remove-Shadow {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         $shadow
     )
     Process {
@@ -79,24 +79,24 @@ Function Remove-Shadow {
 Function New-Mount {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $drive,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $path
     )
     Process {
-        DefineDosDevice 0 $drive $path
+        Invoke-DefineDosDevice 0 $drive $path
     }
 }
 
 Function Remove-Mount {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $drive,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $path
     )
     Process {
@@ -107,13 +107,13 @@ Function Remove-Mount {
 Function Invoke-DefineDosDevice {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [uint32] $flags,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $drive,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $path
     )
     Process {
@@ -129,10 +129,10 @@ Function Invoke-DefineDosDevice {
 Function Remove-Files {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $source,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $target
     )
     Process {
@@ -147,10 +147,10 @@ Function Remove-Files {
 Function Copy-Files {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $source,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $target
     )
     Process {
@@ -165,13 +165,13 @@ Function Copy-Files {
 Function Invoke-Checked {
     [CmdletBinding()]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $command,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory)]
         [String] $arguments,
 
-        [Parameter(Mandatory = $false)]
+        [Parameter()]
         [int[]] $expectedCodes = 0
     )
     Process {
