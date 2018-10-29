@@ -42,7 +42,8 @@ Function Reset-Services {
             Set-Service -Name $service -StartupType Automatic
             Stop-Service -Name $service
         }
-        foreach ($service in [array]::Reverse($services)) {
+        [array]::Reverse($services)
+        foreach ($service in $services) {
             Start-Service -Name $service
         }
     }
