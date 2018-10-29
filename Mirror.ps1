@@ -14,17 +14,19 @@ Function Mirror {
         [Parameter(Mandatory = $false)]
         [String] $shadowDrive = "B:"
     )
-    Begin {
-        Reset-Services COMsysAPP, SENS, EventSystem, SwPrv, VSS
-        $shadow = New-Shadow $sourceDrive
+    Reset-Services COMsysAPP, SENS, EventSystem, SwPrv, VSS
+    $shadow = New-Shadow $sourceDrive
+    try {
         New-Mount $shadowDrive $shadow.DeviceObject
+        try {
+            Remove-Files $shadowDrive $targetDrive
+            Copy-Files $shadowDrive $targetDrive
+        }
+        finally {
+            Remove-Mount $shadowDrive $shadow.DeviceObject
+        }
     }
-    Process {
-        Remove-Files $shadowDrive $targetDrive
-        Copy-Files $shadowDrive $targetDrive
-    }
-    End {
-        Remove-Mount $shadowDrive $shadow.DeviceObject
+    finally {
         Remove-Shadow $shadow
     }
 }
