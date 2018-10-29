@@ -1,5 +1,5 @@
 Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
 $PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
 
 Function Mirror {
@@ -12,7 +12,7 @@ Function Mirror {
         [String] $targetDrive,
 
         [Parameter()]
-        [String] $shadowDrive = "B:"
+        [String] $shadowDrive = 'B:'
     )
     Reset-Services COMsysAPP, SENS, EventSystem, SwPrv, VSS
     $shadow = New-Shadow $sourceDrive
@@ -57,7 +57,7 @@ Function New-Shadow {
     )
     Process {
         $Win32_ShadowCopy = Get-WmiObject -List Win32_ShadowCopy
-        $created = $Win32_ShadowCopy.Create($drive + "\", "ClientAccessible")
+        $created = $Win32_ShadowCopy.Create($drive + '\', 'ClientAccessible')
         $shadow = Get-WmiObject Win32_ShadowCopy | Where-Object ID -eq $created.ShadowId
         Write-Verbose $shadow
         Write-Verbose $shadow.DeviceObject
@@ -118,7 +118,7 @@ Function Invoke-DefineDosDevice {
     )
     Process {
         $DefineDosDevice = '[DllImport("kernel32.dll", CharSet=CharSet.Auto, SetLastError=true)] public static extern bool DefineDosDevice(int dwFlags, string lpDeviceName, string lpTargetPath);'
-        $Kernel32 = Add-Type -MemberDefinition $DefineDosDevice -Name "Kernel32" -Namespace "Win32" -PassThru
+        $Kernel32 = Add-Type -MemberDefinition $DefineDosDevice -Name 'Kernel32' -Namespace 'Win32' -PassThru
         $success = $Kernel32::DefineDosDevice($flags, $drive, $path)
         if ( -not $success ) {
             throw [ComponentModel.Win32Exception][Runtime.InteropServices.Marshal]::GetLastWin32Error()
@@ -136,10 +136,10 @@ Function Remove-Files {
         [String] $target
     )
     Process {
-        $copy = "/nocopy /mir"
-        $fileSelection = "/xc /xn /xo /xl /xj"
-        $retry = "/r:5"
-        $logging = "/x /ndl /np /unicode"
+        $copy = '/nocopy /mir'
+        $fileSelection = '/xc /xn /xo /xl /xj'
+        $retry = '/r:5'
+        $logging = '/x /ndl /np /unicode'
         Invoke-Checked robocopy "$source $target $copy $fileSelection $retry $logging" 0, 2
     }
 }
@@ -154,10 +154,10 @@ Function Copy-Files {
         [String] $target
     )
     Process {
-        $copy = "/b /dcopy:t /copyall /secfix /timfix /mir"
-        $fileSelection = "/xj"
-        $retry = "/r:5"
-        $logging = "/x /ndl /np /unicode"
+        $copy = '/b /dcopy:t /copyall /secfix /timfix /mir'
+        $fileSelection = '/xj'
+        $retry = '/r:5'
+        $logging = '/x /ndl /np /unicode'
         Invoke-Checked robocopy "$source $target $copy $fileSelection $retry $logging" 0, 1, 4, 5
     }
 }
