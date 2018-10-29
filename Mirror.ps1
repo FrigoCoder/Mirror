@@ -100,11 +100,11 @@ Function Remove-Mount {
         [String] $path
     )
     Process {
-        DefineDosDevice 6 $drive $path
+        Invoke-DefineDosDevice 6 $drive $path
     }
 }
 
-Function DefineDosDevice {
+Function Invoke-DefineDosDevice {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true)]
