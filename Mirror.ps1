@@ -118,7 +118,10 @@ Function DefineDosDevice {
     Process {
         $DefineDosDevice = '[DllImport("kernel32.dll", CharSet=CharSet.Auto, SetLastError=true)] public static extern bool DefineDosDevice(int dwFlags, string lpDeviceName, string lpTargetPath);'
         $Kernel32 = Add-Type -MemberDefinition $DefineDosDevice -Name "Kernel32" -Namespace "Win32" -PassThru
-        $Kernel32::DefineDosDevice($flags, $drive, $path)
+        $success = $Kernel32::DefineDosDevice($flags, $drive, $path)
+        if ( -not $success ) {
+            throw [ComponentModel.Win32Exception][Runtime.InteropServices.Marshal]::GetLastWin32Error()
+        }
     }
 }
 
