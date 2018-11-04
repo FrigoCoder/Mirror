@@ -136,7 +136,7 @@ Function Remove-Files {
         [String] $target
     )
     Process {
-        $copy = '/b /copy:DATSOU /dcopy:DAT /secfix /timfix /mir'
+        $copy = '/b /nocopy /mir'
         $fileSelection = '/xc /xn /xo /xl /xj /xjd /xjf'
         $retry = '/r:5'
         $logging = '/x /ndl /np'
