@@ -136,10 +136,10 @@ Function Remove-Files {
         [String] $target
     )
     Process {
-        $copy = '/nocopy /mir'
-        $fileSelection = '/xc /xn /xo /xl /xj'
+        $copy = '/b /copy:DATSOU /dcopy:DAT /secfix /timfix /mir'
+        $fileSelection = '/xc /xn /xo /xl /xj /xjd /xjf'
         $retry = '/r:5'
-        $logging = '/x /ndl /np /unicode'
+        $logging = '/x /ndl /np'
         Invoke-Checked robocopy "$source $target $copy $fileSelection $retry $logging" 0, 2
     }
 }
@@ -154,10 +154,10 @@ Function Copy-Files {
         [String] $target
     )
     Process {
-        $copy = '/b /dcopy:t /copyall /secfix /timfix /mir'
-        $fileSelection = '/xj'
+        $copy = '/b /copy:DATSOU /dcopy:DAT /secfix /timfix /mir'
+        $fileSelection = '/xj /xjd /xjf'
         $retry = '/r:5'
-        $logging = '/x /ndl /np /unicode'
+        $logging = '/x /ndl /np'
         Invoke-Checked robocopy "$source $target $copy $fileSelection $retry $logging" 0, 1, 4, 5
     }
 }
