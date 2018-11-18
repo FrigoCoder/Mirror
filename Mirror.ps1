@@ -2,6 +2,11 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $PSDefaultParameterValues['*:ErrorAction'] = 'Stop'
 
+Import-Module .\Shadow
+Import-Module .\Mount
+Import-Module .\Service
+Import-Module .\Invoke
+
 Function Mirror {
     [CmdletBinding()]
     Param (
@@ -28,101 +33,6 @@ Function Mirror {
     }
     finally {
         Remove-Shadow $shadow
-    }
-}
-
-Function Reset-Services {
-    [CmdletBinding()]
-    Param (
-        [Parameter(Mandatory)]
-        [String[]] $services
-    )
-    Process {
-        foreach ( $service in $services ) {
-            Set-Service -Name $service -StartupType Automatic
-            Stop-Service -Name $service
-        }
-        [array]::Reverse($services)
-        foreach ($service in $services) {
-            Start-Service -Name $service
-        }
-    }
-}
-
-Function New-Shadow {
-    [CmdletBinding()]
-    Param (
-        [Parameter(Mandatory)]
-        [String] $drive
-    )
-    Process {
-        $Win32_ShadowCopy = Get-WmiObject -List Win32_ShadowCopy
-        $created = $Win32_ShadowCopy.Create($drive + '\', 'ClientAccessible')
-        $shadow = Get-WmiObject Win32_ShadowCopy | Where-Object ID -eq $created.ShadowId
-        Write-Verbose $shadow
-        Write-Verbose $shadow.DeviceObject
-        return $shadow
-    }
-}
-
-Function Remove-Shadow {
-    [CmdletBinding()]
-    Param (
-        [Parameter(Mandatory)]
-        $shadow
-    )
-    Process {
-        $shadow.Delete()
-    }
-}
-
-Function New-Mount {
-    [CmdletBinding()]
-    Param (
-        [Parameter(Mandatory)]
-        [String] $drive,
-
-        [Parameter(Mandatory)]
-        [String] $path
-    )
-    Process {
-        Invoke-DefineDosDevice 0 $drive $path
-    }
-}
-
-Function Remove-Mount {
-    [CmdletBinding()]
-    Param (
-        [Parameter(Mandatory)]
-        [String] $drive,
-
-        [Parameter(Mandatory)]
-        [String] $path
-    )
-    Process {
-        Invoke-DefineDosDevice 6 $drive $path
-    }
-}
-
-Function Invoke-DefineDosDevice {
-    [CmdletBinding()]
-    Param (
-        [Parameter(Mandatory)]
-        [uint32] $flags,
-
-        [Parameter(Mandatory)]
-        [String] $drive,
-
-        [Parameter(Mandatory)]
-        [String] $path
-    )
-    Process {
-        $DefineDosDevice = '[DllImport("kernel32.dll", CharSet=CharSet.Auto, SetLastError=true)] public static extern bool DefineDosDevice(int dwFlags, string lpDeviceName, string lpTargetPath);'
-        $Kernel32 = Add-Type -MemberDefinition $DefineDosDevice -Name 'Kernel32' -Namespace 'Win32' -PassThru
-        $success = $Kernel32::DefineDosDevice($flags, $drive, $path)
-        if ( -not $success ) {
-            throw [ComponentModel.Win32Exception][Runtime.InteropServices.Marshal]::GetLastWin32Error()
-        }
     }
 }
 
@@ -159,27 +69,6 @@ Function Copy-Files {
         $retry = '/r:5'
         $logging = '/x /ndl /np'
         Invoke-Checked robocopy "$source $target $copy $fileSelection $retry $logging" 0, 1, 4, 5
-    }
-}
-
-Function Invoke-Checked {
-    [CmdletBinding()]
-    Param (
-        [Parameter(Mandatory)]
-        [String] $command,
-
-        [Parameter(Mandatory)]
-        [String] $arguments,
-
-        [Parameter()]
-        [int[]] $expectedCodes = 0
-    )
-    Process {
-        $process = Start-Process -FilePath $command -ArgumentList $arguments -NoNewWindow -PassThru -Wait
-        $exitCode = $process.ExitCode
-        if ( -not $expectedCodes.Contains($exitCode) ) {
-            throw "Failed with exit code ${exitCode}: $command $arguments"
-        }
     }
 }
 
