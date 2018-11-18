@@ -50,7 +50,7 @@ Function Remove-Files {
         $fileSelection = '/xc /xn /xo /xl /xj /xjd /xjf'
         $retry = '/r:5'
         $logging = '/x /ndl /np'
-        Invoke-Checked robocopy "$source $target $copy $fileSelection $retry $logging" 0, 2
+        Invoke-Checked -FilePath robocopy -ArgumentList "$source $target $copy $fileSelection $retry $logging" -ExpectedExitCodes 0, 2
     }
 }
 
@@ -68,7 +68,7 @@ Function Copy-Files {
         $fileSelection = '/xj /xjd /xjf'
         $retry = '/r:5'
         $logging = '/x /ndl /np'
-        Invoke-Checked robocopy "$source $target $copy $fileSelection $retry $logging" 0, 1, 4, 5
+        Invoke-Checked -FilePath robocopy -ArgumentList "$source $target $copy $fileSelection $retry $logging" -ExpectedExitCodes 0, 1, 4, 5
     }
 }
 

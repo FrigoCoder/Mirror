@@ -2,12 +2,15 @@ Function Invoke-Checked {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory)]
+        [Alias("FilePath")]
         [String] $command,
 
         [Parameter(Mandatory)]
+        [Alias("ArgumentList")]
         [String] $arguments,
 
         [Parameter()]
+        [Alias("ExpectedExitCodes")]
         [int[]] $expectedCodes = 0
     )
     Process {
